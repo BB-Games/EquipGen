@@ -29,11 +29,11 @@ jobs:
       run: |
         pnpm build
 
-    # - name: Publish build to GitHub Actions
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: github-pages
-    #     path: build
+    - name: Publish build to GitHub Actions
+      uses: actions/upload-artifact@v3
+      with:
+        name: github-pages
+        path: build
 
     - name: Setup Pages
       uses: actions/configure-pages@v3
