@@ -9,11 +9,11 @@ on:
 
 jobs:
   build-app:
-    permissions: write-all
-      # pages: write      # to deploy to Pages
-      # id-token: write   # to verify the deployment originates from an appropriate source
-      # contents: read
-    
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+      contents: read
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -31,12 +31,6 @@ jobs:
     - name: Build App
       run: |
         pnpm build
-
-    # - name: Publish build to GitHub Actions
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: github-pages
-    #     path: build
 
     - name: Setup Pages
       uses: actions/configure-pages@v3
