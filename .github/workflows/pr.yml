@@ -1,0 +1,29 @@
+name: Build (PR)
+
+on:
+  pull_request:
+    
+jobs:
+  build-app:
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        run_install: true
+
+    - name: Build App
+      run: |
+        pnpm build
