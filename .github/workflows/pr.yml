@@ -2,18 +2,14 @@ name: Build (PR)
 
 on:
   pull_request:
-    
+
 jobs:
   build-app:
     permissions:
       pages: write
       id-token: write
       contents: read
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
+      
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
