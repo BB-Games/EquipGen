@@ -20,7 +20,5 @@
 		"vite": "^4.4.2"
 	},
 	"type": "module",
-	"dependencies": {
-		"gh-pages": "^6.0.0"
-	}
+	"dependencies": {}
 }
