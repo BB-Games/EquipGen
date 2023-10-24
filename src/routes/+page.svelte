@@ -19,6 +19,8 @@
     "ITEM_EQUIP_SLOT_FLASHSOUND",
   ];
 
+  let modelPassedValidation = true;
+
   let formData = {
     itemName: "",
     itemSlot: "",
@@ -45,9 +47,17 @@
     },
   };
 
+  let modelValidation = true;
+
   // Handle the button generate logic.
   function HandleSubmit() {
     // TODO: store the values in an array as items so we can output to a singular file
+
+    if (formData.modelPath.search("(?![/])models") == -1) {
+      alert("Model path invalid! Make sure it beings with '/models'!");
+      return;
+    }
+
     let baseString = `-- ${formData.itemName}\nBB.EquipableItemData[<ID>] = {\n`;
     baseString += `\tSlot = ${formData.itemSlot},\n`;
     if (formData.altItemSlot != "") {
@@ -66,7 +76,6 @@
       formData.matrixScale.y > 1 ||
       formData.matrixScale.z > 1
     ) {
-      //  TODO: Verify correct matrix type as I'm sure this is the wrong one
       baseString += `, Matrix = {Scale = (Vector(${formData.matrixScale.x}, ${formData.matrixScale.y}, ${formData.matrixScale.z}))`;
     }
 
@@ -113,7 +122,15 @@
     label="Model Path"
     bind:value={formData.modelPath}
     required="true"
+    regexValidation="(?![/])models"
+    bind:passesValidation={modelPassedValidation}
+    validationHint="Ensure your model path starts with '/models'"
   />
+
+  {#if modelValidation == false}
+    <div>Model path invalid!</div>
+  {/if}
+
   <Dropdown
     label="Alternative Item Slot"
     attachmentArray={itemType}
@@ -162,7 +179,7 @@
   <button type="reset">Clear</button>
 </form>
 
-<span id="versionLabel">v0.1</span>
+<span id="versionLabel">v0.2</span>
 <a id="watermark" href="//bbservers.co.uk">bbservers.co.uk</a>
 
 <style>
