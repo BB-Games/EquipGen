@@ -58,6 +58,11 @@
       return;
     }
 
+    if (formData.modelPath.endsWith(".mdl") == false) {
+      alert("Model path invalid! Make sure it ends with '.mdl'!");
+      return;
+    }
+
     let baseString = `-- ${formData.itemName}\nBB.EquipableItemData[<ID>] = {\n`;
     baseString += `\tSlot = ${formData.itemSlot},\n`;
     if (formData.altItemSlot != "") {
