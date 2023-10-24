@@ -122,7 +122,7 @@
     label="Model Path"
     bind:value={formData.modelPath}
     required="true"
-    regexValidation="(?![/])models"
+    regexValidation="^(?:[\\/]?)models"
     bind:passesValidation={modelPassedValidation}
     validationHint="Ensure your model path starts with '/models'"
   />
