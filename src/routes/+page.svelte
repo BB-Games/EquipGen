@@ -105,7 +105,7 @@
 
 <form on:submit|preventDefault={HandleSubmit} method="none">
   <Entrybox
-    ph="Item Name"
+    ph="My Incredible Item"
     label="Item Name"
     bind:value={formData.itemName}
     required="true"
@@ -118,7 +118,7 @@
     required="true"
   />
   <Entrybox
-    ph="Model Path"
+    ph="/models/my/awesome/model.mdl"
     label="Model Path"
     bind:value={formData.modelPath}
     required="true"
