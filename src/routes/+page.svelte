@@ -4,7 +4,6 @@
   import DropdownAttachments from "../components/dropdown-attachments.svelte";
   import Numgroup from "../components/numgroup.svelte";
   import Checkbox from "../components/checkbox.svelte";
-  import { Alert } from "flowbite-svelte";
 
   let itemType = Object();
   itemType = [
