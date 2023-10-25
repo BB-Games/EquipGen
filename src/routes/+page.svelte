@@ -74,17 +74,17 @@
 
     baseString += `\tModels = {\n`;
     // In future, allow adding multiple 'model' entries for multi-model items.
-    baseString += `\t\t{ Model = "${formData.modelPath}", ${formData.attachmentTypeGroup} = "${formData.attachmentType}", Scale = ${formData.modelScale}, AngleOffset = Angle(${formData.angles.x}, ${formData.angles.y}, ${formData.angles.z}), PosOffset = Vector(${formData.position.x}, ${formData.position.y}, ${formData.position.z})`;
+    baseString += `\t\t{Model = "${formData.modelPath}", ${formData.attachmentTypeGroup} = "${formData.attachmentType}", Scale = ${formData.modelScale}, AngleOffset = Angle(${formData.angles.x}, ${formData.angles.y}, ${formData.angles.z}), PosOffset = Vector(${formData.position.x}, ${formData.position.y}, ${formData.position.z})`;
 
     if (
       formData.matrixScale.x > 1 ||
       formData.matrixScale.y > 1 ||
       formData.matrixScale.z > 1
     ) {
-      baseString += `, Matrix = {Scale = (Vector(${formData.matrixScale.x}, ${formData.matrixScale.y}, ${formData.matrixScale.z}))`;
+      baseString += `, Matrix = {Scale = (Vector(${formData.matrixScale.x}, ${formData.matrixScale.y}, ${formData.matrixScale.z}))}`;
     }
 
-    baseString += "}},\n\t},\n}";
+    baseString += "},\n\t},\n}";
     console.log(baseString);
 
     // Save the values and download as a text file
@@ -184,7 +184,7 @@
   <button type="reset">Clear</button>
 </form>
 
-<span id="versionLabel">v0.2</span>
+<span id="versionLabel">v0.2.1</span>
 <a id="watermark" href="//bbservers.co.uk">bbservers.co.uk</a>
 
 <style>
