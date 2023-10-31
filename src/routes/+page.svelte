@@ -64,7 +64,7 @@
       return;
     }
 
-    let baseString = `-- ${formData.itemName}\n-- EquipGen version: ${version}\nBB.EquipableItemData[<ID>] = {\n`;
+    let baseString = `-- ${formData.itemName}\n -- EquipGen version: ${version}\nBB.EquipableItemData[<ID>] = {\n`;
     baseString += `\tSlot = ${formData.itemSlot},\n`;
     if (formData.altItemSlot != "") {
       baseString += `\tAltSlot = ${formData.altItemSlot},\n`;
@@ -185,7 +185,7 @@
   <button type="reset">Clear</button>
 </form>
 
-<span id="versionLabel">${version}</span>
+<span id="versionLabel">v{version}</span>
 <a id="watermark" href="//bbservers.co.uk">bbservers.co.uk</a>
 
 <style>
