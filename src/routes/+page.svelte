@@ -5,6 +5,7 @@
   import Numgroup from "../components/numgroup.svelte";
   import Checkbox from "../components/checkbox.svelte";
 
+  let version = "0.2.2";
   let itemType = Object();
   itemType = [
     "ITEM_EQUIP_SLOT_HEAD",
@@ -63,7 +64,7 @@
       return;
     }
 
-    let baseString = `-- ${formData.itemName}\nBB.EquipableItemData[<ID>] = {\n`;
+    let baseString = `-- ${formData.itemName}\n-- EquipGen version: ${version}\nBB.EquipableItemData[<ID>] = {\n`;
     baseString += `\tSlot = ${formData.itemSlot},\n`;
     if (formData.altItemSlot != "") {
       baseString += `\tAltSlot = ${formData.altItemSlot},\n`;
@@ -184,7 +185,7 @@
   <button type="reset">Clear</button>
 </form>
 
-<span id="versionLabel">v0.2.1</span>
+<span id="versionLabel">${version}</span>
 <a id="watermark" href="//bbservers.co.uk">bbservers.co.uk</a>
 
 <style>
