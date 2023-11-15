@@ -101,7 +101,7 @@
 <label
   >{label}:
   <select id="dropdown" on:change={handleSelect} required={actualRequired}>
-    <option value="">--Please choose an option--</option>
+    <option value="">Please choose an option</option>
     {#each Object.keys(attachmentArray) as attachment}
       <optgroup label={attachment}>
         {#each attachmentArray[attachment] as attachmentOption}
