@@ -1,13 +1,12 @@
 <script>
   export let set = false;
   export let label = "";
-
-  // function to convert boolean to 0 or 1
+  export let disabled = false;
 </script>
 
 <label>
   {label}:
-  <input type="checkbox" bind:checked={set} />
+  <input type="checkbox" {disabled} bind:checked={set} />
 </label>
 
 <style>

@@ -5,7 +5,7 @@
   import Numgroup from "../components/numgroup.svelte";
   import Checkbox from "../components/checkbox.svelte";
 
-  let version = "0.2.2";
+  let version = "0.3";
   let itemType = Object();
   itemType = [
     "ITEM_EQUIP_SLOT_HEAD",
@@ -48,6 +48,22 @@
     },
   };
 
+  let unusualCheckboxDisabled = false;
+
+  $: {
+    if (
+      formData.itemSlot == "ITEM_EQUIP_SLOT_HEAD" ||
+      formData.itemSlot == "ITEM_EQUIP_SLOT_FACE" ||
+      formData.altItemSlot == "ITEM_EQUIP_SLOT_HEAD" ||
+      formData.altItemSlot == "ITEM_EQUIP_SLOT_FACE"
+    ) {
+      unusualCheckboxDisabled = false;
+    } else {
+      unusualCheckboxDisabled = true;
+      formData.defaultUnusual = false;
+    }
+  }
+
   let modelValidation = true;
 
   // Handle the button generate logic.
@@ -64,7 +80,7 @@
       return;
     }
 
-    let baseString = `-- ${formData.itemName}\n -- EquipGen version: ${version}\nBB.EquipableItemData[<ID>] = {\n`;
+    let baseString = `-- ${formData.itemName}\n-- EquipGen version: ${version}\nBB.EquipableItemData[<ID>] = {\n`;
     baseString += `\tSlot = ${formData.itemSlot},\n`;
     if (formData.altItemSlot != "") {
       baseString += `\tAltSlot = ${formData.altItemSlot},\n`;
@@ -141,6 +157,7 @@
     label="Alternative Item Slot"
     attachmentArray={itemType}
     bind:selectedOption={formData.altItemSlot}
+    optional="true"
   />
 
   <Numgroup
@@ -179,6 +196,7 @@
   <Checkbox
     label="Use default unusual effects?"
     bind:set={formData.defaultUnusual}
+    disabled={unusualCheckboxDisabled}
   />
 
   <button type="submit">Generate</button>
