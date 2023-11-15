@@ -2,8 +2,6 @@
   export let set = false;
   export let label = "";
   export let disabled = false;
-
-  // function to convert boolean to 0 or 1
 </script>
 
 <label>
