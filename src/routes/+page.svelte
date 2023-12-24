@@ -4,8 +4,9 @@
   import DropdownAttachments from "../components/dropdown-attachments.svelte";
   import Numgroup from "../components/numgroup.svelte";
   import Checkbox from "../components/checkbox.svelte";
+  import EventOptions from "../components/key-value-dropdown.svelte";
 
-  let version = "0.3";
+  let version = "0.3.1";
   let itemType = Object();
   itemType = [
     "ITEM_EQUIP_SLOT_HEAD",
@@ -18,6 +19,22 @@
     "ITEM_EQUIP_SLOT_MISC",
     "ITEM_EQUIP_SLOT_MISC_2",
     "ITEM_EQUIP_SLOT_FLASHSOUND",
+  ];
+
+  let eventOptions = Object();
+  eventOptions = [
+    {
+      value: `\tCanEquip = function(objPlayer, objItem)
+\t\treturn BB.Events.IsChristmas() || objPlayer:IsPlatinum(), "This item can only be equipped during Christmas!"
+\tend`,
+      label: "Christmas",
+    },
+    {
+      value: `\tCanEquip = function(objPlayer, objItem)
+\t\treturn BB.Events.IsHalloween() || objPlayer:IsPlatinum(), "This item can only be equipped during Halloween!"
+\tend`,
+      label: "Halloween",
+    },
   ];
 
   let modelPassedValidation = true;
@@ -46,6 +63,7 @@
       y: 1,
       z: 1,
     },
+    seasonal: "",
   };
 
   let unusualCheckboxDisabled = false;
@@ -101,8 +119,17 @@
       baseString += `, Matrix = {Scale = (Vector(${formData.matrixScale.x}, ${formData.matrixScale.y}, ${formData.matrixScale.z}))}`;
     }
 
-    baseString += "},\n\t},\n}";
-    console.log(baseString);
+    baseString += "},\n\t},";
+
+    // console.log(formData.seasonal);
+
+    if (formData.seasonal != "") {
+      baseString += `\n\n${formData.seasonal},`;
+    }
+
+    baseString += "\n}";
+
+    // console.log(baseString);
 
     // Save the values and download as a text file
     const phEvent = document.createElement("a");
@@ -198,6 +225,14 @@
     bind:set={formData.defaultUnusual}
     disabled={unusualCheckboxDisabled}
   />
+
+  <EventOptions
+    label="Event Type"
+    bind:selectedOption={formData.seasonal}
+    attachmentArray={eventOptions}
+    optional="true"
+  />
+  <br />
 
   <button type="submit">Generate</button>
   <button type="reset">Clear</button>
