@@ -121,7 +121,7 @@
 
     baseString += "},\n\t},";
 
-    console.log(formData.seasonal);
+    // console.log(formData.seasonal);
 
     if (formData.seasonal != "") {
       baseString += `\n\n${formData.seasonal},`;
