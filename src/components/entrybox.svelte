@@ -2,6 +2,7 @@
   export let label = "";
   export let value = "";
   export let type = "text";
+  export let step = 1;
   export let ph = "unset";
   export let required = "false";
   export let regexValidation = "";
@@ -48,6 +49,7 @@
     use:setType
     required={actualRequired}
     on:input={validateInput}
+    step="{step}"
   />
 </label>
 
