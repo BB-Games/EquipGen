@@ -6,7 +6,7 @@
   import Checkbox from "../components/checkbox.svelte";
   import EventOptions from "../components/key-value-dropdown.svelte";
 
-  let version = "0.3.1";
+  let version = "0.3.2";
   let itemType = Object();
   itemType = [
     "ITEM_EQUIP_SLOT_HEAD",
@@ -212,6 +212,7 @@
     label="Model Scale"
     bind:value={formData.modelScale}
     type="number"
+    step="0.001"
   />
   <Numgroup
     label="Matrix Scale"
