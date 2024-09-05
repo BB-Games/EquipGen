@@ -15,7 +15,7 @@
 		"@sveltejs/adapter-static": "^3.0.4",
 		"@sveltejs/kit": "^2.5.26",
 		"svelte": "^4.2.19",
-		"svelte-check": "^4.0.0",
+		"svelte-check": "^4.0.1",
 		"typescript": "^5.5.4",
 		"vite": "^5.4.2"
 	},
