@@ -6,9 +6,8 @@
   import Checkbox from "../components/checkbox.svelte";
   import EventOptions from "../components/key-value-dropdown.svelte";
 
-  let version = "0.3.2";
-  let itemType = Object();
-  itemType = [
+  let version = "0.4.0";
+  let itemType = [
     "ITEM_EQUIP_SLOT_HEAD",
     "ITEM_EQUIP_SLOT_FACE",
     "ITEM_EQUIP_SLOT_ARMS",
@@ -21,18 +20,17 @@
     "ITEM_EQUIP_SLOT_FLASHSOUND",
   ];
 
-  let eventOptions = Object();
-  eventOptions = [
+  let eventOptions = [
     {
       value: `\tCanEquip = function(objPlayer, objItem)
-\t\treturn BB.Events.IsChristmas() || objPlayer:IsPlatinum(), "This item can only be equipped during Christmas!"
-\tend`,
+  \t\treturn BB.Events.IsChristmas() || objPlayer:IsPlatinum(), "This item can only be equipped during Christmas!"
+  \tend`,
       label: "Christmas",
     },
     {
       value: `\tCanEquip = function(objPlayer, objItem)
-\t\treturn BB.Events.IsHalloween() || objPlayer:IsPlatinum(), "This item can only be equipped during Halloween!"
-\tend`,
+  \t\treturn BB.Events.IsHalloween() || objPlayer:IsPlatinum(), "This item can only be equipped during Halloween!"
+  \tend`,
       label: "Halloween",
     },
   ];
@@ -84,12 +82,9 @@
 
   let modelValidation = true;
 
-  // Handle the button generate logic.
   function HandleSubmit() {
-    // TODO: store the values in an array as items so we can output to a singular file
-
     if (formData.modelPath.search("(?![/])models") == -1) {
-      alert("Model path invalid! Make sure it beings with '/models'!");
+      alert("Model path invalid! Make sure it begins with '/models'!");
       return;
     }
 
@@ -108,7 +103,6 @@
     }
 
     baseString += `\tModels = {\n`;
-    // In future, allow adding multiple 'model' entries for multi-model items.
     baseString += `\t\t{Model = "${formData.modelPath}", ${formData.attachmentTypeGroup} = "${formData.attachmentType}", Scale = ${formData.modelScale}, AngleOffset = Angle(${formData.angles.x}, ${formData.angles.y}, ${formData.angles.z}), PosOffset = Vector(${formData.position.x}, ${formData.position.y}, ${formData.position.z})`;
 
     if (
@@ -121,36 +115,124 @@
 
     baseString += "},\n\t},";
 
-    // console.log(formData.seasonal);
-
     if (formData.seasonal != "") {
       baseString += `\n\n${formData.seasonal},`;
     }
 
     baseString += "\n}";
 
-    // console.log(baseString);
-
-    // Save the values and download as a text file
     const phEvent = document.createElement("a");
-    phEvent.href = `data:text/plain;charset=utf-8,${encodeURIComponent(
-      baseString
-    )}`;
-    // Generate unix timestamp of now
+    phEvent.href = `data:text/plain;charset=utf-8,${encodeURIComponent(baseString)}`;
     const now = Date.now();
-
     phEvent.download = `equipgen-${now}.txt`;
     phEvent.click();
+  }
+
+  function parsePACConfig(text) {
+    const selfSectionMatch = text.match(
+      /\["children"\]\s*=\s*\{\s*\[1\]\s*=\s*\{\s*[\s\S]*?\["self"\]\s*=\s*\{([\s\S]*?)\}\s*,\s*\},/
+    );
+
+    if (selfSectionMatch) {
+      const selfContent = selfSectionMatch[1];
+
+      const modelPathMatch = selfContent.match(/\["Model"\]\s*=\s*"([^"]+)"/);
+      const positionMatch = selfContent.match(/\["Position"\]\s*=\s*Vector\(([^)]+)\)/);
+      const anglesMatch = selfContent.match(/\["Angles"\]\s*=\s*Angle\(([^)]+)\)/);
+      const scaleMatch = selfContent.match(/\["Scale"\]\s*=\s*Vector\(([^)]+)\)/);
+      const scaleVectorMatch = selfContent.match(/\["Scale"\]\s*=\s*Vector\(([^)]+)\)/);
+      const sizeMatch = selfContent.match(/\["Size"\]\s*=\s*([0-9.+-eE]+)/);
+
+      return {
+        self: {
+          Model: modelPathMatch ? modelPathMatch[1] : "",
+          Position: positionMatch ? parseVector(positionMatch[1]) : { x: 0, y: 0, z: 0 },
+          Angles: anglesMatch ? parseVector(anglesMatch[1]) : { x: 0, y: 0, z: 0 },
+          ScaleVector: scaleVectorMatch ? parseVector(scaleVectorMatch[1]) : { x: 1, y: 1, z: 1 },
+          Size: sizeMatch ? parseFloat(sizeMatch[1]) : 1,
+        },
+      };
+    } else {
+      console.error("Failed to extract self section from PAC3 config.");
+      return null;
+    }
+  }
+
+  function parseVector(vectorString) {
+    const [x, y, z] = vectorString.split(",").map((num) => parseFloat(num.trim()));
+    return {
+      x: truncateTo4Decimals(x || 0),
+      y: truncateTo4Decimals(y || 0),
+      z: truncateTo4Decimals(z || 0),
+    };
+  }
+
+  function truncateTo4Decimals(num) {
+    const numStr = num.toString();
+    const decimalIndex = numStr.indexOf(".");
+    if (decimalIndex === -1) {
+      return num;
+    }
+    const truncatedStr = numStr.slice(0, decimalIndex + 5);
+    return parseFloat(truncatedStr);
+  }
+
+  async function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const text = await file.text();
+      const pacConfig = parsePACConfig(text);
+
+      if (pacConfig && pacConfig.self) {
+        formData = {
+          ...formData,
+          modelPath: pacConfig.self.Model || "",
+          position: {
+            x: pacConfig.self.Position?.x || 0,
+            y: pacConfig.self.Position?.y || 0,
+            z: pacConfig.self.Position?.z || 0,
+          },
+          angles: {
+            x: pacConfig.self.Angles?.x || 0,
+            y: pacConfig.self.Angles?.y || 0,
+            z: pacConfig.self.Angles?.z || 0,
+          },
+          modelScale: truncateTo4Decimals(pacConfig.self.Size || 1),
+          matrixScale: {
+            x: pacConfig.self.ScaleVector?.x || 1,
+            y: pacConfig.self.ScaleVector?.y || 1,
+            z: pacConfig.self.ScaleVector?.z || 1,
+          }
+        };
+      } else {
+        alert("Failed to parse PAC3 config. Please ensure the file is valid.");
+      }
+    }
   }
 </script>
 
 <h1>Equipment Generator</h1>
 <p style="margin-bottom:2px;">
-  A web based version of the original EquipGen for converting values taken out
-  of PAC3 into the [BB] format
+  A web-based version of the original EquipGen for converting values taken out
+  of PAC3 into the [BB] format.
 </p>
 
 <hr />
+
+<details class="importer-details">
+  <summary class="importer-summary">Import PAC3 File</summary>
+  <div class="importer-container">
+    <input
+      id="pac3-file"
+      type="file"
+      accept=".txt,"
+      on:change={handleFileUpload}
+      class="importer-input"
+    />
+    <small class="importer-note">Upload a PAC3 export file (.txt) to auto-fill some form fields.</small>
+  </div>
+  <br />
+</details>
 
 <form on:submit|preventDefault={HandleSubmit} method="none">
   <Entrybox
@@ -292,6 +374,41 @@
     display: grid;
     grid-template-columns: max-content max-content;
     grid-gap: 5px;
+  }
+
+  .importer-details {
+    margin-bottom: 10px;
+  }
+
+  .importer-summary {
+    cursor: pointer;
+    font-weight: bold;
+    color: #f5f5f5;
+    outline: none;
+  }
+
+  .importer-container {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-column-gap: 5px;
+    align-items: center;
+    margin-top: 5px;
+  }
+
+  .importer-label {
+    grid-column: 1 / 3;
+    margin-bottom: 5px;
+  }
+
+  .importer-input {
+    grid-column: 1 / 3;
+    width: 100%;
+  }
+
+  .importer-note {
+    grid-column: 1 / 3;
+    font-size: 12px;
+    opacity: 0.8;
   }
 
   #versionLabel {
