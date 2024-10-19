@@ -28,5 +28,10 @@
 	},
 	"dependencies": {
 		"@sveltejs/vite-plugin-svelte": "^3.1.2"
+	},
+	
+	"resolutions": {
+		"cookie": "^0.7.0"
 	}
+
 }
