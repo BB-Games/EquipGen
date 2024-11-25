@@ -12,7 +12,7 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-static": "^3.0.6",
-		"@sveltejs/kit": "^2.8.1",
+		"@sveltejs/kit": "^2.8.3",
 		"svelte": "^4.2.19",
 		"svelte-check": "^4.0.9",
 		"typescript": "^5.6.3",
