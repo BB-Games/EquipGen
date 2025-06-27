@@ -105,12 +105,15 @@
     baseString += `\tModels = {\n`;
     baseString += `\t\t{Model = "${formData.modelPath}", ${formData.attachmentTypeGroup} = "${formData.attachmentType}", Scale = ${formData.modelScale}, AngleOffset = Angle(${formData.angles.x}, ${formData.angles.y}, ${formData.angles.z}), PosOffset = Vector(${formData.position.x}, ${formData.position.y}, ${formData.position.z})`;
 
-    if (
-      formData.matrixScale.x > 1 ||
-      formData.matrixScale.y > 1 ||
-      formData.matrixScale.z > 1
-    ) {
-      baseString += `, Matrix = {Scale = (Vector(${formData.matrixScale.x}, ${formData.matrixScale.y}, ${formData.matrixScale.z}))}`;
+    const { x, y, z } = formData.matrixScale;
+    const isValidScale = (val) => val > 0 && val !== 1;
+
+    if (isValidScale(x) || isValidScale(y) || isValidScale(z)) {
+      const safeX = x > 0 ? x : 1;
+      const safeY = y > 0 ? y : 1;
+      const safeZ = z > 0 ? z : 1;
+
+      baseString += `, Matrix = {Scale = (Vector(${safeX}, ${safeY}, ${safeZ}))}`;
     }
 
     baseString += "},\n\t},";
