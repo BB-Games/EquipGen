@@ -6,7 +6,7 @@
   import Checkbox from "../components/checkbox.svelte";
   import EventOptions from "../components/key-value-dropdown.svelte";
 
-  let version = "0.4.0";
+  let version = "0.4.1";
   let itemType = [
     "ITEM_EQUIP_SLOT_HEAD",
     "ITEM_EQUIP_SLOT_FACE",
