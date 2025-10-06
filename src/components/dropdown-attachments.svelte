@@ -130,8 +130,8 @@
     opacity: 0.6;
     pointer-events: none;
     filter: grayscale(80%);
-    background-color: #1f1f1f; /* slightly darker to match entrybox feel */
-    color: #aaaaaa; /* dimmed text */
+    background-color: #1f1f1f;
+    color: #aaaaaa;
     border-color: #444;
   }
 
