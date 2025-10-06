@@ -17,7 +17,7 @@ pnpm dev
 ### Example Output
 
 ```lua
-BB.EquipableItemData[374] = {
+BB.EquipableItemData[<ID>] = {
     Slot = ITEM_EQUIP_SLOT_MISC,
     AltSlot = ITEM_EQUIP_SLOT_ARMS,
     Models = {
