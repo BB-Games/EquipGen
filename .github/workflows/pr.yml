@@ -6,8 +6,6 @@ on:
 jobs:
   build-app:
     permissions:
-      pages: write
-      id-token: write
       contents: read
       
     runs-on: ubuntu-latest
