@@ -6,6 +6,12 @@ Built with [**SvelteKit**](https://kit.svelte.dev/), it provides a structured, v
 The tool can read exported **PAC3** configuration files and automatically populate item data such as model path, position, angles, and scale. Users can adjust these values manually, select attachment points, and apply optional behaviours like bone merging or seasonal restrictions.  
 When ready, EquipGen outputs a formatted Lua configuration block that can be downloaded and pasted directly into a Garry’s Mod script.
 
+Once dependencies are installed, the app can be run locally with:
+
+```bash
+pnpm dev
+```
+
 ---
 
 ### Example Output
