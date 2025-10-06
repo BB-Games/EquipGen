@@ -1,6 +1,7 @@
 <script>
   export let selectedOption = "";
   export let selectedOptionGroup = "";
+  export let disabled = false;
 
   function handleSelect(event) {
     selectedOption = event.target.value;
@@ -100,7 +101,7 @@
 
 <label
   >{label}:
-  <select id="dropdown" on:change={handleSelect} required={actualRequired}>
+  <select id="dropdown" on:change={handleSelect} required={actualRequired} disabled={disabled}>
     <option value="">Please choose an option</option>
     {#each Object.keys(attachmentArray) as attachment}
       <optgroup label={attachment}>
@@ -123,6 +124,15 @@
     position: relative;
     color: #f5f5f5;
     min-width: 300px;
+  }
+
+  select:disabled {
+    opacity: 0.6;
+    pointer-events: none;
+    filter: grayscale(80%);
+    background-color: #1f1f1f;
+    color: #aaaaaa;
+    border-color: #444;
   }
 
   label {

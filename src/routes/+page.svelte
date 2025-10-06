@@ -6,7 +6,7 @@
   import Checkbox from "../components/checkbox.svelte";
   import EventOptions from "../components/key-value-dropdown.svelte";
 
-  let version = "0.4.1";
+  let version = "0.4.2";
   let itemType = [
     "ITEM_EQUIP_SLOT_HEAD",
     "ITEM_EQUIP_SLOT_FACE",
@@ -43,28 +43,18 @@
     modelPath: "",
     altItemSlot: "",
     defaultUnusual: false,
-    position: {
-      x: 0,
-      y: 0,
-      z: 0,
-    },
-    angles: {
-      x: 0,
-      y: 0,
-      z: 0,
-    },
+    position: { x: 0, y: 0, z: 0 },
+    angles: { x: 0, y: 0, z: 0 },
     attachmentType: "",
     attachmentTypeGroup: "",
     modelScale: 1,
-    matrixScale: {
-      x: 1,
-      y: 1,
-      z: 1,
-    },
+    matrixScale: { x: 1, y: 1, z: 1 },
     seasonal: "",
+    boneMerging: false,
   };
 
   let unusualCheckboxDisabled = false;
+  let modelValidation = true;
 
   $: {
     if (
@@ -80,7 +70,7 @@
     }
   }
 
-  let modelValidation = true;
+  $: disableTransformFields = formData.boneMerging === true;
 
   function HandleSubmit() {
     if (formData.modelPath.search("(?![/])models") == -1) {
@@ -103,17 +93,21 @@
     }
 
     baseString += `\tModels = {\n`;
-    baseString += `\t\t{Model = "${formData.modelPath}", ${formData.attachmentTypeGroup} = "${formData.attachmentType}", Scale = ${formData.modelScale}, AngleOffset = Angle(${formData.angles.x}, ${formData.angles.y}, ${formData.angles.z}), PosOffset = Vector(${formData.position.x}, ${formData.position.y}, ${formData.position.z})`;
+    baseString += `\t\t{Model = "${formData.modelPath}", `;
 
-    const { x, y, z } = formData.matrixScale;
-    const isValidScale = (val) => val > 0 && val !== 1;
+    if (formData.boneMerging) {
+      baseString += `BoneMerge = true, Scale = ${formData.modelScale}`;
+    } else {
+      baseString += `${formData.attachmentTypeGroup} = "${formData.attachmentType}", Scale = ${formData.modelScale}, AngleOffset = Angle(${formData.angles.x}, ${formData.angles.y}, ${formData.angles.z}), PosOffset = Vector(${formData.position.x}, ${formData.position.y}, ${formData.position.z})`;
 
-    if (isValidScale(x) || isValidScale(y) || isValidScale(z)) {
-      const safeX = x > 0 ? x : 1;
-      const safeY = y > 0 ? y : 1;
-      const safeZ = z > 0 ? z : 1;
-
-      baseString += `, Matrix = {Scale = (Vector(${safeX}, ${safeY}, ${safeZ}))}`;
+      const { x, y, z } = formData.matrixScale;
+      const isValidScale = (val) => val > 0 && val !== 1;
+      if (isValidScale(x) || isValidScale(y) || isValidScale(z)) {
+        const safeX = x > 0 ? x : 1;
+        const safeY = y > 0 ? y : 1;
+        const safeZ = z > 0 ? z : 1;
+        baseString += `, Matrix = {Scale = (Vector(${safeX}, ${safeY}, ${safeZ}))}`;
+      }
     }
 
     baseString += "},\n\t},";
@@ -142,7 +136,6 @@
       const modelPathMatch = selfContent.match(/\["Model"\]\s*=\s*"([^"]+)"/);
       const positionMatch = selfContent.match(/\["Position"\]\s*=\s*Vector\(([^)]+)\)/);
       const anglesMatch = selfContent.match(/\["Angles"\]\s*=\s*Angle\(([^)]+)\)/);
-      const scaleMatch = selfContent.match(/\["Scale"\]\s*=\s*Vector\(([^)]+)\)/);
       const scaleVectorMatch = selfContent.match(/\["Scale"\]\s*=\s*Vector\(([^)]+)\)/);
       const sizeMatch = selfContent.match(/\["Size"\]\s*=\s*([0-9.+-eE]+)/);
 
@@ -205,7 +198,7 @@
             x: pacConfig.self.ScaleVector?.x || 1,
             y: pacConfig.self.ScaleVector?.y || 1,
             z: pacConfig.self.ScaleVector?.z || 1,
-          }
+          },
         };
       } else {
         alert("Failed to parse PAC3 config. Please ensure the file is valid.");
@@ -251,6 +244,7 @@
     bind:selectedOption={formData.itemSlot}
     required="true"
   />
+
   <Entrybox
     ph="/models/my/awesome/model.mdl"
     label="Model Path"
@@ -277,19 +271,23 @@
     bind:xValue={formData.position.x}
     bind:yValue={formData.position.y}
     bind:zValue={formData.position.z}
+    disabled={disableTransformFields}
   />
+
   <Numgroup
     label="Angles"
     bind:xValue={formData.angles.x}
     bind:yValue={formData.angles.y}
     bind:zValue={formData.angles.z}
+    disabled={disableTransformFields}
   />
 
   <DropdownAttachments
     label="Attachment Type"
     bind:selectedOption={formData.attachmentType}
     bind:selectedOptionGroup={formData.attachmentTypeGroup}
-    required="true"
+    required={!disableTransformFields}
+    disabled={disableTransformFields}
   />
 
   <Entrybox
@@ -299,11 +297,13 @@
     type="number"
     step="0.001"
   />
+
   <Numgroup
     label="Matrix Scale"
     bind:xValue={formData.matrixScale.x}
     bind:yValue={formData.matrixScale.y}
     bind:zValue={formData.matrixScale.z}
+    disabled={disableTransformFields}
   />
 
   <Checkbox
@@ -318,7 +318,11 @@
     attachmentArray={eventOptions}
     optional="true"
   />
-  <br />
+
+  <Checkbox
+    label="Bone-merged item?"
+    bind:set={formData.boneMerging}
+  />
 
   <button type="submit">Generate</button>
   <button type="reset">Clear</button>
@@ -342,13 +346,7 @@
     display: grid;
   }
 
-  h1 {
-    color: #f5f5f5;
-  }
-
-  p {
-    color: #f5f5f5;
-  }
+  h1, p { color: #f5f5f5; }
 
   button {
     background-color: #2b2b2b;
@@ -379,17 +377,8 @@
     grid-gap: 5px;
   }
 
-  .importer-details {
-    margin-bottom: 10px;
-  }
-
-  .importer-summary {
-    cursor: pointer;
-    font-weight: bold;
-    color: #f5f5f5;
-    outline: none;
-  }
-
+  .importer-details { margin-bottom: 10px; }
+  .importer-summary { cursor: pointer; font-weight: bold; color: #f5f5f5; outline: none; }
   .importer-container {
     display: grid;
     grid-template-columns: max-content max-content;
@@ -398,21 +387,7 @@
     margin-top: 5px;
   }
 
-  .importer-label {
-    grid-column: 1 / 3;
-    margin-bottom: 5px;
-  }
-
-  .importer-input {
-    grid-column: 1 / 3;
-    width: 100%;
-  }
-
-  .importer-note {
-    grid-column: 1 / 3;
-    font-size: 12px;
-    opacity: 0.8;
-  }
+  .importer-note { grid-column: 1 / 3; font-size: 12px; opacity: 0.8; }
 
   #versionLabel {
     color: #f5f5f5;
