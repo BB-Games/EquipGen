@@ -320,7 +320,7 @@
   />
 
   <Checkbox
-    label="Use Bone Merging?"
+    label="Bone-merged item?"
     bind:set={formData.boneMerging}
   />
 
