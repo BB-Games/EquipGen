@@ -8,6 +8,7 @@
   export let regexValidation = "";
   export let passesValidation = true;
   export let validationHint = "";
+  export let disabled = false;
 
   let actualRequired = JSON.parse(required);
 
@@ -50,6 +51,7 @@
     required={actualRequired}
     on:input={validateInput}
     step="{step}"
+    disabled={disabled}
   />
 </label>
 
@@ -68,6 +70,15 @@
     background-color: #2d2d2d;
     position: relative;
     color: white;
+  }
+
+  input:disabled {
+    opacity: 0.6;
+    pointer-events: none;
+    filter: grayscale(80%);
+    background-color: #1f1f1f;
+    color: #aaaaaa; 
+    border-color: #444;
   }
 
   .invalid {
