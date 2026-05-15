@@ -1,0 +1,7 @@
+overrides:
+  cookie: "^0.7.0"
+  esbuild: "^0.25"
+  devalue: "^5.8.1"
+allowBuilds:
+  workerd: true
+  esbuild: true
