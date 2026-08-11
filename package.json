@@ -28,9 +28,5 @@
 	},
 	"dependencies": {
 		"@sveltejs/vite-plugin-svelte": "^7.1.2"
-	},
-	"resolutions": {
-		"cookie": "^0.7.0",
-		"esbuild": "^0.25"
 	}
 }
