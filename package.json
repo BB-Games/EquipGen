@@ -19,18 +19,7 @@
 		"vite": "^8.0.16"
 	},
 	"type": "module",
-	"pnpm": {
-		"peerDependencyRules": {
-			"allowedVersions": {
-				"vite": "5"
-			}
-		}
-	},
 	"dependencies": {
 		"@sveltejs/vite-plugin-svelte": "^7.1.2"
-	},
-	"resolutions": {
-		"cookie": "^0.7.0",
-		"esbuild": "^0.25"
 	}
 }
